@@ -1,25 +1,4 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: virtualization
-  namespace: openshift-gitops
-spec:
-  destination:
-    namespace: openshift-cnv
-    server: https://kubernetes.default.svc
-  project: default
-  source:
-    path: rbacmultitenancydemo/argocds
-    repoURL: https://github.com/ch-stark/gitops-rbac-example.git
-    targetRevision: HEAD
-  syncPolicy:
-    syncOptions:
-    - CreateNamespace=true
-    automated:
-      selfHeal: true
-      prune: true  
-
-apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: virtualization
@@ -34,6 +13,7 @@ spec:
     metadata:
       name: '{{name}}-virtualization'
     spec:
+      project: default
       source:
         repoURL: https://github.com/0xFelix/gitops-demo.git
         targetRevision: HEAD
@@ -41,3 +21,9 @@ spec:
       destination:
         server: '{{server}}'
         namespace: openshift-cnv
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          selfHeal: true
+          prune: true
