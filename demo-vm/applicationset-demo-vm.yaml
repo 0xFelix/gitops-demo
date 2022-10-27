@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-vm
+  namespace: openshift-gitops
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchLabels:
+          argocd.argoproj.io/secret-type: cluster
+  template:
+    metadata:
+      name: '{{name}}-demo-vm'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/0xFelix/gitops-demo.git
+        targetRevision: HEAD
+        path: demo-vm/manifests
+      destination:
+        server: '{{server}}'
+        namespace: demo-vm
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          selfHeal: true
+          prune: true
